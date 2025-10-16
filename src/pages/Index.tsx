@@ -363,12 +363,12 @@ const Index = () => {
             )}
 
             {isEditMode ? (
-              <Textarea
+              <input
+                type="text"
                 value={editedText}
                 onChange={(e) => setEditedText(e.target.value)}
-                className="!h-[50px] bg-background/50 text-card-foreground resize-none overflow-y-auto text-sm py-1 px-2"
+                className="w-full h-8 bg-background/50 text-card-foreground border border-input rounded-md px-3 text-sm"
                 placeholder="Введите текст..."
-                style={{ minHeight: '50px', maxHeight: '50px', height: '50px' }}
               />
             ) : (
               <p className="text-gray-600 leading-relaxed text-center text-2xl font-bold break-words whitespace-normal" style={{transform: 'scale(1.3, 1.1)', wordBreak: 'break-word'}}>
