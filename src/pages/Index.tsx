@@ -87,11 +87,19 @@ const Index = () => {
   }, [pageId]);
 
   const createNewCopy = () => {
+    if (!isAuthenticated) {
+      setShowPasswordDialog(true);
+      return;
+    }
     const newId = `?copy=${Date.now()}`;
     window.open(newId, '_blank');
   };
 
   const loadAllCopies = () => {
+    if (!isAuthenticated) {
+      setShowPasswordDialog(true);
+      return;
+    }
     const copies: Array<{id: string, text: string, imageUrl: string}> = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
@@ -187,9 +195,12 @@ const Index = () => {
   const handlePasswordSubmit = () => {
     if (passwordInput === '210212251277') {
       setIsAuthenticated(true);
-      setIsEditMode(true);
       setShowPasswordDialog(false);
       setPasswordInput('');
+      
+      if (!isEditMode && !showCopiesDialog) {
+        setIsEditMode(true);
+      }
     } else {
       alert('Неверный пароль');
       setPasswordInput('');
