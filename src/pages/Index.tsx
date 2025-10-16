@@ -208,7 +208,7 @@ const Index = () => {
                 placeholder="Введите текст..."
               />
             ) : (
-              <p className="text-card-foreground leading-relaxed text-center">
+              <p className="text-gray-600 leading-relaxed text-center text-lg">
                 {content.text}
               </p>
             )}
