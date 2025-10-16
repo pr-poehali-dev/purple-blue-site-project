@@ -32,19 +32,59 @@ const Index = () => {
   const [allCopies, setAllCopies] = useState<Array<{id: string, text: string, imageUrl: string}>>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  const [content, setContent] = useState<PageContent>(() => {
-    const pageId = window.location.pathname + window.location.search;
-    const saved = localStorage.getItem(`page-content-${pageId}`);
-    return saved ? JSON.parse(saved) : {
-      text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
-      imageUrl: '/avatar-icon.svg'
-    };
+  const [content, setContent] = useState<PageContent>({
+    text: 'Загрузка...',
+    imageUrl: '/avatar-icon.svg'
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   const [editedText, setEditedText] = useState(content.text);
   const [editedImageUrl, setEditedImageUrl] = useState(content.imageUrl);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [pageId] = useState(() => window.location.pathname + window.location.search);
+
+  useEffect(() => {
+    const loadPageContent = async () => {
+      const localData = localStorage.getItem(`page-content-${pageId}`);
+      if (localData) {
+        setContent(JSON.parse(localData));
+        setEditedText(JSON.parse(localData).text);
+        setEditedImageUrl(JSON.parse(localData).imageUrl);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `https://functions.poehali.dev/ab23f550-3a81-4f44-8342-4f6d35ed8de4?pageId=${encodeURIComponent(pageId)}`
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          setContent(data.content);
+          setEditedText(data.content.text);
+          setEditedImageUrl(data.content.imageUrl);
+        } else {
+          setContent({
+            text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
+            imageUrl: '/avatar-icon.svg'
+          });
+          setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.');
+          setEditedImageUrl('/avatar-icon.svg');
+        }
+      } catch (error) {
+        setContent({
+          text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
+          imageUrl: '/avatar-icon.svg'
+        });
+        setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.');
+        setEditedImageUrl('/avatar-icon.svg');
+      }
+      setIsLoading(false);
+    };
+
+    loadPageContent();
+  }, [pageId]);
 
   const createNewCopy = () => {
     const newId = `?copy=${Date.now()}`;
@@ -156,15 +196,29 @@ const Index = () => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const newContent = {
       text: editedText,
       imageUrl: editedImageUrl
     };
     setContent(newContent);
     
-    const pageId = window.location.pathname + window.location.search;
     localStorage.setItem(`page-content-${pageId}`, JSON.stringify(newContent));
+    
+    try {
+      await fetch('https://functions.poehali.dev/ab23f550-3a81-4f44-8342-4f6d35ed8de4', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pageId: pageId,
+          content: newContent
+        })
+      });
+    } catch (error) {
+      console.error('Failed to save to server:', error);
+    }
     
     setIsEditMode(false);
     setIsAuthenticated(false);

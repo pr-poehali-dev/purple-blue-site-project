@@ -1,0 +1,33 @@
+{
+  "tests": [
+    {
+      "name": "Save page content",
+      "method": "POST",
+      "body": {
+        "pageId": "/test",
+        "content": {
+          "text": "Test page",
+          "imageUrl": "/avatar-icon.svg"
+        }
+      },
+      "expectedStatus": 200,
+      "expectedBody": {
+        "success": true,
+        "pageId": "/test"
+      },
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "Load non-existent page",
+      "method": "GET",
+      "queryParams": {
+        "pageId": "/nonexistent"
+      },
+      "expectedStatus": 404,
+      "expectedBody": {
+        "error": "Page not found"
+      },
+      "bodyMatcher": "partial"
+    }
+  ]
+}
