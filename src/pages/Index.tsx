@@ -208,7 +208,7 @@ const Index = () => {
                 placeholder="Введите текст..."
               />
             ) : (
-              <p className="text-gray-600 leading-relaxed text-center text-2xl font-bold" style={{transform: 'scaleX(1.3)'}}>
+              <p className="text-gray-600 leading-relaxed text-center text-2xl font-bold" style={{transform: 'scale(1.3, 1.1)'}}>
                 {content.text}
               </p>
             )}
