@@ -366,7 +366,7 @@ const Index = () => {
               <Textarea
                 value={editedText}
                 onChange={(e) => setEditedText(e.target.value)}
-                className="min-h-[120px] bg-background/50 text-card-foreground resize-none"
+                className="min-h-[80px] bg-background/50 text-card-foreground resize-none"
                 placeholder="Введите текст..."
               />
             ) : (
