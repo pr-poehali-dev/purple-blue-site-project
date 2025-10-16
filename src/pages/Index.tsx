@@ -42,6 +42,12 @@ const Index = () => {
   const [editedText, setEditedText] = useState(content.text);
   const [editedImageUrl, setEditedImageUrl] = useState(content.imageUrl);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [pageId] = useState(() => window.location.pathname + window.location.search);
+
+  const createNewCopy = () => {
+    const newId = `?copy=${Date.now()}`;
+    window.open(newId, '_blank');
+  };
 
   useEffect(() => {
     const initialBubbles: Bubble[] = Array.from({ length: 8 }, (_, i) => ({
@@ -162,6 +168,20 @@ const Index = () => {
           onMouseDown={() => handleMouseDown(bubble.id)}
         />
       ))}
+
+      <div className="fixed top-4 right-4 z-20 flex gap-2">
+        <Button
+          onClick={createNewCopy}
+          variant="outline"
+          className="bg-card/80 backdrop-blur-xl"
+        >
+          <Icon name="Copy" size={16} className="mr-2" />
+          Создать копию
+        </Button>
+        <div className="bg-card/80 backdrop-blur-xl px-4 py-2 rounded-md border border-border/50 text-sm text-card-foreground">
+          {pageId === '/' ? 'Основная страница' : `Копия ${pageId.split('=')[1]?.slice(0, 8) || ''}`}
+        </div>
+      </div>
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <Card className="w-full max-w-sm bg-card/80 backdrop-blur-xl border-border/50 shadow-2xl">
