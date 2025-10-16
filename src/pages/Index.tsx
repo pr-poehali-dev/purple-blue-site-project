@@ -163,7 +163,7 @@ const Index = () => {
       ))}
 
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-card/80 backdrop-blur-xl border-border/50 shadow-2xl">
+        <Card className="w-full max-w-sm bg-card/80 backdrop-blur-xl border-border/50 shadow-2xl">
           <div className="p-8 space-y-6">
             {isEditMode ? (
               <>
@@ -208,7 +208,7 @@ const Index = () => {
                 placeholder="Введите текст..."
               />
             ) : (
-              <p className="text-gray-600 leading-relaxed text-center text-2xl">
+              <p className="text-gray-600 leading-relaxed text-center text-2xl font-semibold">
                 {content.text}
               </p>
             )}
