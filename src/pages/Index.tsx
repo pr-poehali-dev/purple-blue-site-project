@@ -35,7 +35,7 @@ const Index = () => {
     const saved = localStorage.getItem(`page-content-${pageId}`);
     return saved ? JSON.parse(saved) : {
       text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
-      imageUrl: 'https://cdn.poehali.dev/projects/9036b7b9-2d3b-4143-8f4a-2530db89f2e0/files/8bffeee3-2349-483a-9805-2e84838b7246.jpg'
+      imageUrl: '/default-avatar.svg'
     };
   });
 
