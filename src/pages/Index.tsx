@@ -140,7 +140,7 @@ const Index = () => {
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0f0f0f]"
+      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#f5f5f5] via-[#e5e5e5] to-[#fafafa]"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       ref={containerRef}
