@@ -48,7 +48,7 @@ const Index = () => {
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
       size: 80 + Math.random() * 120,
-      color: i % 3 === 0 ? 'rgba(139, 92, 246, 0.3)' : i % 3 === 1 ? 'rgba(59, 130, 246, 0.3)' : 'rgba(91, 33, 182, 0.3)',
+      color: i % 3 === 0 ? 'rgba(239, 68, 68, 0.25)' : i % 3 === 1 ? 'rgba(255, 255, 255, 0.15)' : 'rgba(185, 28, 28, 0.3)',
       vx: (Math.random() - 0.5) * 0.5,
       vy: (Math.random() - 0.5) * 0.5,
     }));
@@ -140,7 +140,7 @@ const Index = () => {
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#1e1b4b] via-[#312e81] to-[#4c1d95]"
+      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#0a0a0a] via-[#1a1a1a] to-[#0f0f0f]"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       ref={containerRef}
