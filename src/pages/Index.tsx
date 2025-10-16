@@ -366,8 +366,9 @@ const Index = () => {
               <Textarea
                 value={editedText}
                 onChange={(e) => setEditedText(e.target.value)}
-                className="min-h-[20px] max-h-[30px] bg-background/50 text-card-foreground resize-none overflow-y-auto text-xs py-1 px-2"
+                className="!h-[50px] bg-background/50 text-card-foreground resize-none overflow-y-auto text-sm py-1 px-2"
                 placeholder="Введите текст..."
+                style={{ minHeight: '50px', maxHeight: '50px', height: '50px' }}
               />
             ) : (
               <p className="text-gray-600 leading-relaxed text-center text-2xl font-bold break-words whitespace-normal" style={{transform: 'scale(1.3, 1.1)', wordBreak: 'break-word'}}>
