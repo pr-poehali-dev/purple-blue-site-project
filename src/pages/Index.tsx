@@ -45,15 +45,6 @@ const Index = () => {
 
   useEffect(() => {
     const loadPageContent = async () => {
-      const localData = localStorage.getItem(`page-content-${pageId}`);
-      if (localData) {
-        setContent(JSON.parse(localData));
-        setEditedText(JSON.parse(localData).text);
-        setEditedImageUrl(JSON.parse(localData).imageUrl);
-        setIsLoading(false);
-        return;
-      }
-
       try {
         const response = await fetch(
           `https://functions.poehali.dev/ab23f550-3a81-4f44-8342-4f6d35ed8de4?pageId=${encodeURIComponent(pageId)}`
@@ -61,24 +52,50 @@ const Index = () => {
         
         if (response.ok) {
           const data = await response.json();
-          setContent(data.content);
-          setEditedText(data.content.text);
-          setEditedImageUrl(data.content.imageUrl);
+          
+          const localData = localStorage.getItem(`page-content-${pageId}`);
+          if (localData) {
+            const localContent = JSON.parse(localData);
+            setContent(localContent);
+            setEditedText(localContent.text);
+            setEditedImageUrl(localContent.imageUrl);
+          } else {
+            setContent(data.content);
+            setEditedText(data.content.text);
+            setEditedImageUrl(data.content.imageUrl);
+            localStorage.setItem(`page-content-${pageId}`, JSON.stringify(data.content));
+          }
+        } else {
+          const localData = localStorage.getItem(`page-content-${pageId}`);
+          if (localData) {
+            const localContent = JSON.parse(localData);
+            setContent(localContent);
+            setEditedText(localContent.text);
+            setEditedImageUrl(localContent.imageUrl);
+          } else {
+            setContent({
+              text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
+              imageUrl: '/avatar-icon.svg'
+            });
+            setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.');
+            setEditedImageUrl('/avatar-icon.svg');
+          }
+        }
+      } catch (error) {
+        const localData = localStorage.getItem(`page-content-${pageId}`);
+        if (localData) {
+          const localContent = JSON.parse(localData);
+          setContent(localContent);
+          setEditedText(localContent.text);
+          setEditedImageUrl(localContent.imageUrl);
         } else {
           setContent({
             text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
             imageUrl: '/avatar-icon.svg'
           });
-          setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.');
+          setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и izmените этот текст.');
           setEditedImageUrl('/avatar-icon.svg');
         }
-      } catch (error) {
-        setContent({
-          text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
-          imageUrl: '/avatar-icon.svg'
-        });
-        setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.');
-        setEditedImageUrl('/avatar-icon.svg');
       }
       setIsLoading(false);
     };
