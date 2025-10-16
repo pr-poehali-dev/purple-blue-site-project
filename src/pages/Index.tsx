@@ -41,6 +41,7 @@ const Index = () => {
 
   const [editedText, setEditedText] = useState(content.text);
   const [editedImageUrl, setEditedImageUrl] = useState(content.imageUrl);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const initialBubbles: Bubble[] = Array.from({ length: 8 }, (_, i) => ({
@@ -168,12 +169,38 @@ const Index = () => {
             {isEditMode ? (
               <>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-card-foreground">URL изображения</label>
-                  <Input
-                    value={editedImageUrl}
-                    onChange={(e) => setEditedImageUrl(e.target.value)}
-                    className="bg-background/50"
-                    placeholder="https://example.com/image.jpg"
+                  <label className="text-sm font-medium text-card-foreground">Изображение</label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={editedImageUrl}
+                      onChange={(e) => setEditedImageUrl(e.target.value)}
+                      className="bg-background/50 flex-1"
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <Icon name="Upload" size={16} className="mr-2" />
+                      Выбрать
+                    </Button>
+                  </div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          setEditedImageUrl(event.target?.result as string);
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
                   />
                 </div>
                 <div className="aspect-video w-full rounded-lg overflow-hidden bg-muted/30">
