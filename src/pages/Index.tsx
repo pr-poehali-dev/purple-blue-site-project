@@ -35,7 +35,7 @@ const Index = () => {
     const saved = localStorage.getItem(`page-content-${pageId}`);
     return saved ? JSON.parse(saved) : {
       text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
-      imageUrl: '/default-avatar.svg'
+      imageUrl: '/avatar-icon.svg'
     };
   });
 
