@@ -28,6 +28,8 @@ const Index = () => {
   const [passwordInput, setPasswordInput] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [showCopiesDialog, setShowCopiesDialog] = useState(false);
+  const [allCopies, setAllCopies] = useState<Array<{id: string, text: string, imageUrl: string}>>([]);
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [content, setContent] = useState<PageContent>(() => {
@@ -47,6 +49,29 @@ const Index = () => {
   const createNewCopy = () => {
     const newId = `?copy=${Date.now()}`;
     window.open(newId, '_blank');
+  };
+
+  const loadAllCopies = () => {
+    const copies: Array<{id: string, text: string, imageUrl: string}> = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key?.startsWith('page-content-')) {
+        const pageId = key.replace('page-content-', '');
+        const data = JSON.parse(localStorage.getItem(key) || '{}');
+        copies.push({
+          id: pageId,
+          text: data.text?.substring(0, 50) + (data.text?.length > 50 ? '...' : ''),
+          imageUrl: data.imageUrl
+        });
+      }
+    }
+    setAllCopies(copies);
+    setShowCopiesDialog(true);
+  };
+
+  const deleteCopy = (copyId: string) => {
+    localStorage.removeItem(`page-content-${copyId}`);
+    loadAllCopies();
   };
 
   useEffect(() => {
@@ -170,6 +195,14 @@ const Index = () => {
       ))}
 
       <div className="fixed top-4 right-4 z-20 flex gap-2">
+        <Button
+          onClick={loadAllCopies}
+          variant="outline"
+          className="bg-card/80 backdrop-blur-xl"
+        >
+          <Icon name="List" size={16} className="mr-2" />
+          Все копии
+        </Button>
         <Button
           onClick={createNewCopy}
           variant="outline"
@@ -320,6 +353,63 @@ const Index = () => {
                 Отмена
               </Button>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showCopiesDialog} onOpenChange={setShowCopiesDialog}>
+        <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Все копии страниц</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            {allCopies.length === 0 ? (
+              <p className="text-muted-foreground text-center py-8">Нет сохраненных копий</p>
+            ) : (
+              allCopies.map((copy) => (
+                <Card key={copy.id} className="p-4">
+                  <div className="flex gap-4 items-start">
+                    <div className="w-24 h-16 rounded overflow-hidden bg-muted flex-shrink-0">
+                      <img
+                        src={copy.imageUrl}
+                        alt="Превью"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium mb-1">
+                        {copy.id === '/' ? 'Основная страница' : `Копия ${copy.id.split('=')[1]?.slice(0, 8) || ''}`}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {copy.text}
+                      </p>
+                    </div>
+                    <div className="flex gap-2 flex-shrink-0">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          window.open(copy.id, '_blank');
+                        }}
+                      >
+                        <Icon name="ExternalLink" size={14} />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          if (confirm('Удалить эту копию?')) {
+                            deleteCopy(copy.id);
+                          }
+                        }}
+                      >
+                        <Icon name="Trash2" size={14} />
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              ))
+            )}
           </div>
         </DialogContent>
       </Dialog>
