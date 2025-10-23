@@ -159,11 +159,11 @@ const Index = () => {
   };
 
   useEffect(() => {
-    const initialBubbles: Bubble[] = Array.from({ length: 8 }, (_, i) => ({
+    const initialBubbles: Bubble[] = Array.from({ length: 15 }, (_, i) => ({
       id: i,
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
-      size: 80 + Math.random() * 120,
+      size: 60 + Math.random() * 140,
       color: i % 3 === 0 ? 'rgba(239, 68, 68, 0.25)' : i % 3 === 1 ? 'rgba(255, 255, 255, 0.15)' : 'rgba(185, 28, 28, 0.3)',
       vx: (Math.random() - 0.5) * 0.5,
       vy: (Math.random() - 0.5) * 0.5,
@@ -203,13 +203,16 @@ const Index = () => {
     setDraggingId(id);
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
+  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (draggingId === null) return;
+    
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     
     setBubbles((prev) =>
       prev.map((bubble) =>
         bubble.id === draggingId
-          ? { ...bubble, x: e.clientX - bubble.size / 2, y: e.clientY - bubble.size / 2 }
+          ? { ...bubble, x: clientX - bubble.size / 2, y: clientY - bubble.size / 2 }
           : bubble
       )
     );
@@ -276,6 +279,8 @@ const Index = () => {
       className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#d4d4d4] via-[#c4c4c4] to-[#e0e0e0]"
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
+      onTouchMove={handleMouseMove}
+      onTouchEnd={handleMouseUp}
       ref={containerRef}
     >
       {bubbles.map((bubble) => (
@@ -292,6 +297,7 @@ const Index = () => {
             userSelect: 'none',
           }}
           onMouseDown={() => handleMouseDown(bubble.id)}
+          onTouchStart={() => handleMouseDown(bubble.id)}
         />
       ))}
 
