@@ -36,7 +36,7 @@ const Index = () => {
   
   const [content, setContent] = useState<PageContent>({
     text: 'Загрузка...',
-    imageUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d'
+    imageUrl: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=800&h=800&fit=crop'
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -93,10 +93,10 @@ const Index = () => {
         } else {
           setContent({
             text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
-            imageUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d'
+            imageUrl: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=800&h=800&fit=crop'
           });
           setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.');
-          setEditedImageUrl('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d');
+          setEditedImageUrl('https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=800&h=800&fit=crop');
         }
       }
       setIsLoading(false);
