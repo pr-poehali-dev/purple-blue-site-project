@@ -390,10 +390,16 @@ const Index = () => {
                   </Button>
                 </>
               ) : (
-                <Button onClick={handleEditClick} className="w-full" variant="default">
-                  <Icon name="Edit" size={16} className="mr-2" />
-                  Редактировать
-                </Button>
+                <div className="flex gap-2">
+                  <Button onClick={loadAllCopies} className="flex-1" variant="outline">
+                    <Icon name="FolderOpen" size={16} className="mr-2" />
+                    Все версии
+                  </Button>
+                  <Button onClick={handleEditClick} className="flex-1" variant="default">
+                    <Icon name="Edit" size={16} className="mr-2" />
+                    Редактировать
+                  </Button>
+                </div>
               )}
             </div>
           </div>
