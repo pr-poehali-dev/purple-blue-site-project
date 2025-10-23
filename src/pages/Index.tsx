@@ -24,7 +24,6 @@ interface PageContent {
 
 const Index = () => {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
-  const [draggingId, setDraggingId] = useState<number | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -37,7 +36,7 @@ const Index = () => {
   
   const [content, setContent] = useState<PageContent>({
     text: 'Загрузка...',
-    imageUrl: '/avatar-icon.svg'
+    imageUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d'
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -78,10 +77,10 @@ const Index = () => {
           } else {
             setContent({
               text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
-              imageUrl: '/avatar-icon.svg'
+              imageUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d'
             });
             setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.');
-            setEditedImageUrl('/avatar-icon.svg');
+            setEditedImageUrl('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d');
           }
         }
       } catch (error) {
@@ -94,10 +93,10 @@ const Index = () => {
         } else {
           setContent({
             text: 'Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.',
-            imageUrl: '/avatar-icon.svg'
+            imageUrl: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d'
           });
-          setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и izmените этот текст.');
-          setEditedImageUrl('/avatar-icon.svg');
+          setEditedText('Добро пожаловать! Нажмите кнопку редактирования, введите пароль и измените этот текст.');
+          setEditedImageUrl('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d');
         }
       }
       setIsLoading(false);
@@ -172,8 +171,6 @@ const Index = () => {
   }, []);
 
   useEffect(() => {
-    if (draggingId !== null) return;
-
     const interval = setInterval(() => {
       setBubbles((prev) =>
         prev.map((bubble) => {
@@ -197,30 +194,9 @@ const Index = () => {
     }, 20);
 
     return () => clearInterval(interval);
-  }, [draggingId]);
+  }, []);
 
-  const handleMouseDown = (id: number) => {
-    setDraggingId(id);
-  };
 
-  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
-    if (draggingId === null) return;
-    
-    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
-    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
-    
-    setBubbles((prev) =>
-      prev.map((bubble) =>
-        bubble.id === draggingId
-          ? { ...bubble, x: clientX - bubble.size / 2, y: clientY - bubble.size / 2 }
-          : bubble
-      )
-    );
-  };
-
-  const handleMouseUp = () => {
-    setDraggingId(null);
-  };
 
   const handleEditClick = () => {
     if (isEditMode) {
@@ -277,16 +253,12 @@ const Index = () => {
   return (
     <div
       className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#d4d4d4] via-[#c4c4c4] to-[#e0e0e0]"
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onTouchMove={handleMouseMove}
-      onTouchEnd={handleMouseUp}
       ref={containerRef}
     >
       {bubbles.map((bubble) => (
         <div
           key={bubble.id}
-          className="absolute rounded-full backdrop-blur-3xl transition-all duration-100 cursor-move"
+          className="absolute rounded-full backdrop-blur-3xl transition-all duration-100"
           style={{
             left: bubble.x,
             top: bubble.y,
@@ -295,9 +267,8 @@ const Index = () => {
             background: bubble.color,
             filter: 'blur(40px)',
             userSelect: 'none',
+            pointerEvents: 'none',
           }}
-          onMouseDown={() => handleMouseDown(bubble.id)}
-          onTouchStart={() => handleMouseDown(bubble.id)}
         />
       ))}
 
