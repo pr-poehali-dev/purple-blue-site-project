@@ -19,6 +19,7 @@ interface Bubble {
 interface PageContent {
   text: string;
   imageUrl: string;
+  versionName?: string;
 }
 
 const Index = () => {
@@ -29,7 +30,9 @@ const Index = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
   const [showCopiesDialog, setShowCopiesDialog] = useState(false);
-  const [allCopies, setAllCopies] = useState<Array<{id: string, text: string, imageUrl: string}>>([]);
+  const [allCopies, setAllCopies] = useState<Array<{id: string, text: string, imageUrl: string, versionName?: string}>>([]);
+  const [editingVersionId, setEditingVersionId] = useState<string | null>(null);
+  const [editingVersionName, setEditingVersionName] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [content, setContent] = useState<PageContent>({
@@ -117,7 +120,7 @@ const Index = () => {
       setShowPasswordDialog(true);
       return;
     }
-    const copies: Array<{id: string, text: string, imageUrl: string}> = [];
+    const copies: Array<{id: string, text: string, imageUrl: string, versionName?: string}> = [];
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       if (key?.startsWith('page-content-')) {
@@ -126,7 +129,8 @@ const Index = () => {
         copies.push({
           id: pageId,
           text: data.text?.substring(0, 50) + (data.text?.length > 50 ? '...' : ''),
-          imageUrl: data.imageUrl
+          imageUrl: data.imageUrl,
+          versionName: data.versionName
         });
       }
     }
@@ -136,6 +140,21 @@ const Index = () => {
 
   const deleteCopy = (copyId: string) => {
     localStorage.removeItem(`page-content-${copyId}`);
+    loadAllCopies();
+  };
+
+  const handleVersionNameEdit = (copyId: string, currentName?: string) => {
+    setEditingVersionId(copyId);
+    setEditingVersionName(currentName || '');
+  };
+
+  const saveVersionName = (copyId: string) => {
+    const key = `page-content-${copyId}`;
+    const data = JSON.parse(localStorage.getItem(key) || '{}');
+    data.versionName = editingVersionName.trim() || undefined;
+    localStorage.setItem(key, JSON.stringify(data));
+    setEditingVersionId(null);
+    setEditingVersionName('');
     loadAllCopies();
   };
 
@@ -460,14 +479,48 @@ const Index = () => {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium mb-1">
-                        {copy.id === '/' ? 'Основная страница' : `Копия ${copy.id.split('=')[1]?.slice(0, 8) || ''}`}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {copy.text}
-                      </p>
+                      {editingVersionId === copy.id ? (
+                        <div className="space-y-2">
+                          <Input
+                            value={editingVersionName}
+                            onChange={(e) => setEditingVersionName(e.target.value)}
+                            placeholder="Название версии"
+                            className="text-sm"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') saveVersionName(copy.id);
+                              if (e.key === 'Escape') setEditingVersionId(null);
+                            }}
+                            autoFocus
+                          />
+                          <div className="flex gap-2">
+                            <Button size="sm" onClick={() => saveVersionName(copy.id)}>
+                              Сохранить
+                            </Button>
+                            <Button size="sm" variant="outline" onClick={() => setEditingVersionId(null)}>
+                              Отмена
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <p className="text-sm font-medium mb-1">
+                            {copy.versionName || (copy.id === '/' ? 'Основная страница' : `Копия ${copy.id.split('=')[1]?.slice(0, 8) || ''}`)}
+                          </p>
+                          <p className="text-xs text-muted-foreground truncate">
+                            {copy.text}
+                          </p>
+                        </>
+                      )}
                     </div>
                     <div className="flex gap-2 flex-shrink-0">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleVersionNameEdit(copy.id, copy.versionName)}
+                        title="Переименовать"
+                      >
+                        <Icon name="Edit" size={14} />
+                      </Button>
                       <Button
                         size="sm"
                         variant="outline"
