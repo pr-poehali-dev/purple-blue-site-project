@@ -107,12 +107,14 @@ const Index = () => {
   }, [pageId]);
 
   const createNewCopy = () => {
-    if (!isAuthenticated) {
-      setShowPasswordDialog(true);
-      return;
-    }
     const newId = `?copy=${Date.now()}`;
-    window.open(newId, '_blank');
+    const currentContent = {
+      text: content.text,
+      imageUrl: content.imageUrl,
+      versionName: `Версия ${new Date().toLocaleString('ru-RU')}`
+    };
+    localStorage.setItem(`page-content-${newId}`, JSON.stringify(currentContent));
+    loadAllCopies();
   };
 
   const loadAllCopies = () => {
@@ -455,7 +457,13 @@ const Index = () => {
       <Dialog open={showCopiesDialog} onOpenChange={setShowCopiesDialog}>
         <DialogContent className="sm:max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Все копии страниц</DialogTitle>
+            <DialogTitle className="flex items-center justify-between">
+              <span>Все копии страниц</span>
+              <Button onClick={createNewCopy} size="sm">
+                <Icon name="Plus" size={16} className="mr-2" />
+                Создать версию
+              </Button>
+            </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             {allCopies.length === 0 ? (
