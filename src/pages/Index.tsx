@@ -28,6 +28,7 @@ const Index = () => {
   const [passwordInput, setPasswordInput] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
+  const [pendingAction, setPendingAction] = useState<'edit' | 'viewCopies' | null>(null);
   const [showCopiesDialog, setShowCopiesDialog] = useState(false);
   const [allCopies, setAllCopies] = useState<Array<{id: string, text: string, imageUrl: string, versionName?: string}>>([]);
   const [editingVersionId, setEditingVersionId] = useState<string | null>(null);
@@ -116,6 +117,7 @@ const Index = () => {
 
   const loadAllCopies = () => {
     if (!isAuthenticated) {
+      setPendingAction('viewCopies');
       setShowPasswordDialog(true);
       return;
     }
@@ -203,7 +205,12 @@ const Index = () => {
       setIsEditMode(false);
       setIsAuthenticated(false);
     } else {
-      setShowPasswordDialog(true);
+      if (!isAuthenticated) {
+        setPendingAction('edit');
+        setShowPasswordDialog(true);
+      } else {
+        setIsEditMode(true);
+      }
     }
   };
 
@@ -213,9 +220,12 @@ const Index = () => {
       setShowPasswordDialog(false);
       setPasswordInput('');
       
-      if (!isEditMode && !showCopiesDialog) {
+      if (pendingAction === 'edit') {
         setIsEditMode(true);
+      } else if (pendingAction === 'viewCopies') {
+        loadAllCopies();
       }
+      setPendingAction(null);
     } else {
       alert('Неверный пароль');
       setPasswordInput('');
