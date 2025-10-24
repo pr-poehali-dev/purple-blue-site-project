@@ -379,7 +379,7 @@ const Index = () => {
                 placeholder="Введите текст..."
               />
             ) : (
-              <p className="text-gray-600 leading-relaxed text-center text-lg font-bold break-words whitespace-normal px-2">
+              <p className="text-gray-600 leading-relaxed text-center text-xl font-bold break-words whitespace-normal px-4">
                 {content.text}
               </p>
             )}
