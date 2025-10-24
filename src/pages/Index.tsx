@@ -379,7 +379,7 @@ const Index = () => {
                 placeholder="Введите текст..."
               />
             ) : (
-              <p className="text-gray-600 leading-relaxed text-center text-2xl font-bold break-words whitespace-normal" style={{transform: 'scale(1.3, 1.1)', wordBreak: 'break-word'}}>
+              <p className="text-gray-600 leading-relaxed text-center text-lg font-bold break-words whitespace-normal px-2">
                 {content.text}
               </p>
             )}
