@@ -375,7 +375,7 @@ const Index = () => {
                 type="text"
                 value={editedText}
                 onChange={(e) => setEditedText(e.target.value)}
-                className="w-full h-8 bg-background/50 text-card-foreground border border-input rounded-md px-3 text-sm"
+                className="w-full h-8 bg-background/50 text-card-foreground border border-input rounded-md px-3 text-xs"
                 placeholder="Введите текст..."
               />
             ) : (
