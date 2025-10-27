@@ -287,16 +287,27 @@ const Index = () => {
     return `rgba(${Math.round((r + m) * 255)}, ${Math.round((g + m) * 255)}, ${Math.round((b + m) * 255)}, ${alpha})`;
   };
 
+  const adjustHue = (hsl: string, shift: number) => {
+    const [h, s, l] = hsl.split(' ');
+    const newH = (parseFloat(h) + shift) % 360;
+    return `${newH} ${s} ${l}`;
+  };
+
   const handleColorChange = (hslColor: string) => {
     document.documentElement.style.setProperty('--primary', hslColor);
     document.documentElement.style.setProperty('--accent', hslColor);
     document.documentElement.style.setProperty('--ring', hslColor);
     localStorage.setItem('primary-color', hslColor);
     
-    const newBubbles = bubbles.map((bubble, i) => ({
-      ...bubble,
-      color: i % 3 === 0 ? hslToRgba(hslColor, 0.25) : i % 3 === 1 ? 'rgba(255, 255, 255, 0.15)' : hslToRgba(hslColor, 0.3)
-    }));
+    const newBubbles = bubbles.map((bubble, i) => {
+      if (i % 3 === 0) {
+        return { ...bubble, color: hslToRgba(adjustHue(hslColor, -10), 0.25) };
+      } else if (i % 3 === 1) {
+        return { ...bubble, color: 'rgba(255, 255, 255, 0.15)' };
+      } else {
+        return { ...bubble, color: hslToRgba(adjustHue(hslColor, 10), 0.3) };
+      }
+    });
     setBubbles(newBubbles);
     
     setShowColorPicker(false);
@@ -323,10 +334,15 @@ const Index = () => {
   useEffect(() => {
     const savedColor = localStorage.getItem('primary-color');
     if (savedColor && bubbles.length > 0) {
-      const newBubbles = bubbles.map((bubble, i) => ({
-        ...bubble,
-        color: i % 3 === 0 ? hslToRgba(savedColor, 0.25) : i % 3 === 1 ? 'rgba(255, 255, 255, 0.15)' : hslToRgba(savedColor, 0.3)
-      }));
+      const newBubbles = bubbles.map((bubble, i) => {
+        if (i % 3 === 0) {
+          return { ...bubble, color: hslToRgba(adjustHue(savedColor, -10), 0.25) };
+        } else if (i % 3 === 1) {
+          return { ...bubble, color: 'rgba(255, 255, 255, 0.15)' };
+        } else {
+          return { ...bubble, color: hslToRgba(adjustHue(savedColor, 10), 0.3) };
+        }
+      });
       setBubbles(newBubbles);
     }
   }, [bubbles.length]);
