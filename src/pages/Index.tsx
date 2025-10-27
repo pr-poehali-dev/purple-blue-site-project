@@ -34,6 +34,7 @@ const Index = () => {
   const [editingVersionId, setEditingVersionId] = useState<string | null>(null);
   const [editingVersionName, setEditingVersionName] = useState('');
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState('linear-gradient(to bottom right, #d4d4d4, #c4c4c4, #e0e0e0)');
   
   const colorPalette = [
     { name: 'Красный', hsl: '0 84% 60%' },
@@ -299,6 +300,13 @@ const Index = () => {
     document.documentElement.style.setProperty('--ring', hslColor);
     localStorage.setItem('primary-color', hslColor);
     
+    const bgColor1 = hslToRgba(hslColor, 0.08);
+    const bgColor2 = hslToRgba(adjustHue(hslColor, 20), 0.05);
+    const bgColor3 = hslToRgba(adjustHue(hslColor, -15), 0.1);
+    const newBg = `linear-gradient(to bottom right, ${bgColor1}, ${bgColor2}, ${bgColor3})`;
+    setBackgroundColor(newBg);
+    localStorage.setItem('background-gradient', newBg);
+    
     const newBubbles = bubbles.map((bubble, i) => {
       if (i % 3 === 0) {
         return { ...bubble, color: hslToRgba(adjustHue(hslColor, -10), 0.25) };
@@ -324,10 +332,14 @@ const Index = () => {
   
   useEffect(() => {
     const savedColor = localStorage.getItem('primary-color');
+    const savedBg = localStorage.getItem('background-gradient');
     if (savedColor) {
       document.documentElement.style.setProperty('--primary', savedColor);
       document.documentElement.style.setProperty('--accent', savedColor);
       document.documentElement.style.setProperty('--ring', savedColor);
+    }
+    if (savedBg) {
+      setBackgroundColor(savedBg);
     }
   }, []);
   
@@ -377,7 +389,8 @@ const Index = () => {
 
   return (
     <div
-      className="min-h-screen relative overflow-hidden bg-gradient-to-br from-[#d4d4d4] via-[#c4c4c4] to-[#e0e0e0]"
+      className="min-h-screen relative overflow-hidden"
+      style={{ background: backgroundColor }}
       ref={containerRef}
     >
       {bubbles.map((bubble) => (
