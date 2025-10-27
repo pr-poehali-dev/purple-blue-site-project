@@ -33,6 +33,40 @@ const Index = () => {
   const [allCopies, setAllCopies] = useState<Array<{id: string, text: string, imageUrl: string, versionName?: string}>>([]);
   const [editingVersionId, setEditingVersionId] = useState<string | null>(null);
   const [editingVersionName, setEditingVersionName] = useState('');
+  const [showColorPicker, setShowColorPicker] = useState(false);
+  
+  const colorPalette = [
+    { name: 'Красный', hsl: '0 84% 60%' },
+    { name: 'Розовый', hsl: '330 81% 60%' },
+    { name: 'Фуксия', hsl: '300 76% 58%' },
+    { name: 'Фиолетовый', hsl: '270 70% 60%' },
+    { name: 'Индиго', hsl: '240 70% 60%' },
+    { name: 'Синий', hsl: '210 80% 55%' },
+    { name: 'Голубой', hsl: '190 80% 50%' },
+    { name: 'Циан', hsl: '180 70% 50%' },
+    { name: 'Бирюзовый', hsl: '170 70% 45%' },
+    { name: 'Зелёный', hsl: '120 60% 45%' },
+    { name: 'Лаймовый', hsl: '90 60% 50%' },
+    { name: 'Кислотно-зелёный', hsl: '75 90% 55%' },
+    { name: 'Светло-жёлтый', hsl: '55 95% 65%' },
+    { name: 'Жёлтый', hsl: '45 100% 55%' },
+    { name: 'Янтарный', hsl: '38 92% 50%' },
+    { name: 'Оранжевый', hsl: '25 95% 53%' },
+    { name: 'Коралловый', hsl: '15 85% 60%' },
+    { name: 'Золотой', hsl: '43 74% 49%' },
+    { name: 'Бронзовый', hsl: '30 60% 40%' },
+    { name: 'Коричневый', hsl: '25 45% 35%' },
+    { name: 'Серебряный', hsl: '0 0% 75%' },
+    { name: 'Серый', hsl: '0 0% 50%' },
+    { name: 'Тёмно-серый', hsl: '0 0% 30%' },
+    { name: 'Чёрный', hsl: '0 0% 10%' },
+    { name: 'Белый', hsl: '0 0% 95%' },
+    { name: 'Лавандовый', hsl: '260 60% 70%' },
+    { name: 'Мятный', hsl: '150 60% 60%' },
+    { name: 'Персиковый', hsl: '20 80% 70%' },
+    { name: 'Сливовый', hsl: '285 55% 45%' },
+    { name: 'Бордовый', hsl: '350 60% 35%' }
+  ];
   const containerRef = useRef<HTMLDivElement>(null);
   
   const [content, setContent] = useState<PageContent>({
@@ -226,6 +260,8 @@ const Index = () => {
         setIsEditMode(true);
       } else if (pendingAction === 'viewCopies') {
         loadAllCopies();
+      } else if (pendingAction === 'changeColor') {
+        setShowColorPicker(true);
       }
       setPendingAction(null);
     } else {
@@ -233,6 +269,32 @@ const Index = () => {
       setPasswordInput('');
     }
   };
+  
+  const handleColorChange = (hslColor: string) => {
+    document.documentElement.style.setProperty('--primary', hslColor);
+    document.documentElement.style.setProperty('--accent', hslColor);
+    document.documentElement.style.setProperty('--ring', hslColor);
+    localStorage.setItem('primary-color', hslColor);
+    setShowColorPicker(false);
+  };
+  
+  const openColorPicker = () => {
+    if (!isAuthenticated) {
+      setPendingAction('changeColor');
+      setShowPasswordDialog(true);
+    } else {
+      setShowColorPicker(true);
+    }
+  };
+  
+  useEffect(() => {
+    const savedColor = localStorage.getItem('primary-color');
+    if (savedColor) {
+      document.documentElement.style.setProperty('--primary', savedColor);
+      document.documentElement.style.setProperty('--accent', savedColor);
+      document.documentElement.style.setProperty('--ring', savedColor);
+    }
+  }, []);
 
   const handleSave = async () => {
     const newContent = {
@@ -300,6 +362,14 @@ const Index = () => {
         >
           <Icon name="Copy" size={16} className="mr-2" />
           Создать копию
+        </Button>
+        <Button
+          onClick={openColorPicker}
+          variant="outline"
+          className="bg-card/80 backdrop-blur-xl"
+        >
+          <Icon name="Palette" size={16} className="mr-2" />
+          Цвет
         </Button>
         <div className="bg-card/80 backdrop-blur-xl px-4 py-2 rounded-md border border-border/50 text-sm text-card-foreground">
           {pageId === '/' ? 'Основная страница' : `Копия ${pageId.split('=')[1]?.slice(0, 8) || ''}`}
@@ -547,6 +617,30 @@ const Index = () => {
                 </Card>
               ))
             )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={showColorPicker} onOpenChange={setShowColorPicker}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Выбрать основной цвет сайта</DialogTitle>
+          </DialogHeader>
+          <div className="grid grid-cols-5 gap-3 p-4">
+            {colorPalette.map((color) => (
+              <button
+                key={color.name}
+                onClick={() => handleColorChange(color.hsl)}
+                className="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 transition-colors group"
+                title={color.name}
+              >
+                <div 
+                  className="w-12 h-12 rounded-full border-2 border-gray-200 group-hover:scale-110 transition-transform shadow-md"
+                  style={{ backgroundColor: `hsl(${color.hsl})` }}
+                />
+                <span className="text-xs text-gray-600 text-center">{color.name}</span>
+              </button>
+            ))}
           </div>
         </DialogContent>
       </Dialog>
