@@ -317,14 +317,19 @@ const Index = () => {
       document.documentElement.style.setProperty('--primary', savedColor);
       document.documentElement.style.setProperty('--accent', savedColor);
       document.documentElement.style.setProperty('--ring', savedColor);
-      
+    }
+  }, []);
+  
+  useEffect(() => {
+    const savedColor = localStorage.getItem('primary-color');
+    if (savedColor && bubbles.length > 0) {
       const newBubbles = bubbles.map((bubble, i) => ({
         ...bubble,
         color: i % 3 === 0 ? hslToRgba(savedColor, 0.25) : i % 3 === 1 ? 'rgba(255, 255, 255, 0.15)' : hslToRgba(savedColor, 0.3)
       }));
       setBubbles(newBubbles);
     }
-  }, []);
+  }, [bubbles.length]);
 
   const handleSave = async () => {
     const newContent = {
