@@ -360,9 +360,13 @@ const Index = () => {
   }, [bubbles.length]);
 
   const handleSave = async () => {
+    const existingData = localStorage.getItem(`page-content-${pageId}`);
+    const versionName = existingData ? JSON.parse(existingData).versionName : undefined;
+    
     const newContent = {
       text: editedText,
-      imageUrl: editedImageUrl
+      imageUrl: editedImageUrl,
+      versionName: versionName
     };
     setContent(newContent);
     
