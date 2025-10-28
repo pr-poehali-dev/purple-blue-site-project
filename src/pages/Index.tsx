@@ -298,14 +298,14 @@ const Index = () => {
     document.documentElement.style.setProperty('--primary', hslColor);
     document.documentElement.style.setProperty('--accent', hslColor);
     document.documentElement.style.setProperty('--ring', hslColor);
-    localStorage.setItem('primary-color', hslColor);
+    localStorage.setItem(`primary-color-${pageId}`, hslColor);
     
     const bgColor1 = hslToRgba(hslColor, 0.08);
     const bgColor2 = hslToRgba(adjustHue(hslColor, 20), 0.05);
     const bgColor3 = hslToRgba(adjustHue(hslColor, -15), 0.1);
     const newBg = `linear-gradient(to bottom right, ${bgColor1}, ${bgColor2}, ${bgColor3})`;
     setBackgroundColor(newBg);
-    localStorage.setItem('background-gradient', newBg);
+    localStorage.setItem(`background-gradient-${pageId}`, newBg);
     
     const newBubbles = bubbles.map((bubble, i) => {
       if (i % 3 === 0) {
@@ -331,8 +331,8 @@ const Index = () => {
   };
   
   useEffect(() => {
-    const savedColor = localStorage.getItem('primary-color');
-    const savedBg = localStorage.getItem('background-gradient');
+    const savedColor = localStorage.getItem(`primary-color-${pageId}`);
+    const savedBg = localStorage.getItem(`background-gradient-${pageId}`);
     if (savedColor) {
       document.documentElement.style.setProperty('--primary', savedColor);
       document.documentElement.style.setProperty('--accent', savedColor);
@@ -341,10 +341,10 @@ const Index = () => {
     if (savedBg) {
       setBackgroundColor(savedBg);
     }
-  }, []);
+  }, [pageId]);
   
   useEffect(() => {
-    const savedColor = localStorage.getItem('primary-color');
+    const savedColor = localStorage.getItem(`primary-color-${pageId}`);
     if (savedColor && bubbles.length > 0) {
       const newBubbles = bubbles.map((bubble, i) => {
         if (i % 3 === 0) {
@@ -357,7 +357,7 @@ const Index = () => {
       });
       setBubbles(newBubbles);
     }
-  }, [bubbles.length]);
+  }, [bubbles.length, pageId]);
 
   const handleSave = async () => {
     const existingData = localStorage.getItem(`page-content-${pageId}`);
