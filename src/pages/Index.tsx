@@ -337,9 +337,17 @@ const Index = () => {
       document.documentElement.style.setProperty('--primary', savedColor);
       document.documentElement.style.setProperty('--accent', savedColor);
       document.documentElement.style.setProperty('--ring', savedColor);
+    } else {
+      const goldColor = '43 74% 49%';
+      document.documentElement.style.setProperty('--primary', goldColor);
+      document.documentElement.style.setProperty('--accent', goldColor);
+      document.documentElement.style.setProperty('--ring', goldColor);
     }
     if (savedBg) {
       setBackgroundColor(savedBg);
+    } else {
+      const goldBg = 'linear-gradient(to bottom right, rgba(218, 165, 32, 0.08), rgba(255, 215, 0, 0.05), rgba(184, 134, 11, 0.1))';
+      setBackgroundColor(goldBg);
     }
   }, [pageId]);
   
