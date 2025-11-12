@@ -353,14 +353,22 @@ const Index = () => {
   
   useEffect(() => {
     const savedColor = localStorage.getItem(`primary-color-${pageId}`);
-    if (savedColor && bubbles.length > 0) {
+    if (bubbles.length > 0) {
       const newBubbles = bubbles.map((bubble, i) => {
-        if (i % 3 === 0) {
-          return { ...bubble, color: hslToRgba(adjustHue(savedColor, -10), 0.25) };
-        } else if (i % 3 === 1) {
-          return { ...bubble, color: 'rgba(255, 255, 255, 0.15)' };
+        if (savedColor) {
+          if (i % 3 === 0) {
+            return { ...bubble, color: hslToRgba(adjustHue(savedColor, -10), 0.25) };
+          } else if (i % 3 === 1) {
+            return { ...bubble, color: 'rgba(255, 255, 255, 0.15)' };
+          } else {
+            return { ...bubble, color: hslToRgba(adjustHue(savedColor, 10), 0.3) };
+          }
         } else {
-          return { ...bubble, color: hslToRgba(adjustHue(savedColor, 10), 0.3) };
+          if (i % 2 === 0) {
+            return { ...bubble, color: 'rgba(218, 165, 32, 0.3)' };
+          } else {
+            return { ...bubble, color: 'rgba(0, 0, 0, 0.4)' };
+          }
         }
       });
       setBubbles(newBubbles);
