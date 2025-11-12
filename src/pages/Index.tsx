@@ -338,7 +338,7 @@ const Index = () => {
       document.documentElement.style.setProperty('--accent', savedColor);
       document.documentElement.style.setProperty('--ring', savedColor);
     } else {
-      const goldColor = '43 74% 49%';
+      const goldColor = '43 90% 55%';
       document.documentElement.style.setProperty('--primary', goldColor);
       document.documentElement.style.setProperty('--accent', goldColor);
       document.documentElement.style.setProperty('--ring', goldColor);
@@ -365,9 +365,9 @@ const Index = () => {
           }
         } else {
           if (i % 2 === 0) {
-            return { ...bubble, color: 'rgba(218, 165, 32, 0.3)' };
+            return { ...bubble, color: 'rgba(255, 215, 0, 0.4)' };
           } else {
-            return { ...bubble, color: 'rgba(0, 0, 0, 0.4)' };
+            return { ...bubble, color: 'rgba(0, 0, 0, 0.5)' };
           }
         }
       });
