@@ -346,7 +346,7 @@ const Index = () => {
     if (savedBg) {
       setBackgroundColor(savedBg);
     } else {
-      const goldBg = 'linear-gradient(to bottom right, rgba(218, 165, 32, 0.08), rgba(255, 215, 0, 0.05), rgba(184, 134, 11, 0.1))';
+      const goldBg = 'linear-gradient(to bottom right, rgba(30, 30, 30, 0.95), rgba(40, 40, 40, 0.98), rgba(25, 25, 25, 0.95))';
       setBackgroundColor(goldBg);
     }
   }, [pageId]);
@@ -537,7 +537,7 @@ const Index = () => {
                 placeholder="Введите текст..."
               />
             ) : (
-              <p className="text-gray-600 leading-relaxed text-center text-xl font-bold break-words whitespace-normal px-4">
+              <p className="text-card-foreground leading-relaxed text-center text-xl font-bold break-words whitespace-normal px-4">
                 {content.text}
               </p>
             )}
